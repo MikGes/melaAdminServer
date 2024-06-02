@@ -105,5 +105,23 @@ route.put('/updateStatus/:id', async (req, res) => {
     res.send(error.message);
   }
 });
-
+//route to verify email
+route.get("/verifyCustomer/:VerificationToken", async (req, res) => {
+  const VerificationToken = req.params.VerificationToken
+  try {
+    const user = await customer.findOne({verificationToken:VerificationToken});
+    if (user) {
+      user.emailVerified = true;
+      user.verificationToken = undefined;
+      await user.save();
+      res.json({message:"email verified successfully"})
+    } else {
+      res.json({message:"email verification failed"})
+      console.log("Erorr")
+    }
+  } catch (error) {
+    console.log(error.message)
+    res.json({ message: error.message });
+  }
+})
 module.exports  = route
