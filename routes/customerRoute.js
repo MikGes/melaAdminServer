@@ -106,7 +106,7 @@ route.put('/updateStatus/:id', async (req, res) => {
   }
 });
 //route to verify email
-route.get("/verifyCustomer/:VerificationToken", async (req, res) => {
+route.get("/verifyCustomerEmail/:VerificationToken", async (req, res) => {
   const VerificationToken = req.params.VerificationToken
   try {
     const user = await customer.findOne({verificationToken:VerificationToken});
