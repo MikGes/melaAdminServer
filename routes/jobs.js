@@ -47,10 +47,6 @@ router.get('/status-count', async (req, res) => {
         const serviceCount = await Services.countDocuments();
         const adminCount = await Admins.countDocuments();
 
-        // Count male and female providers
-        const maleProviderCount = await Provider.countDocuments({ gender: 'male' });
-        const femaleProviderCount = await Provider.countDocuments({ gender: 'female' });
-
         const totalCount = customerCount + providerCount;
 
         // Prepare the response object
@@ -61,10 +57,6 @@ router.get('/status-count', async (req, res) => {
             admin: adminCount,
             total: totalCount,
            
-            providerGender: {
-                male: maleProviderCount,
-                female: femaleProviderCount,
-            },
         };
 
         res.status(200).json(result);
@@ -72,4 +64,19 @@ router.get('/status-count', async (req, res) => {
         res.status(500).json({ message: 'An error occurred', error });
     }
 });
+//route to get the number of male and female providers
+router.get('/gender', async (req, res) => {
+  try {
+    const providers = await Provider.find();
+    const maleProviders = providers.filter(provider => provider.gender === 'male');
+    const femaleProviders = providers.filter(provider => provider.gender === 'female');
+    const result = {
+      male: maleProviders.length,
+      female: femaleProviders.length
+    };
+    res.status(200).json(result);
+  } catch (error) {
+    res.json({ message: 'An error occurred', error });
+  }
+})
   module.exports = router
