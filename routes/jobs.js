@@ -41,26 +41,35 @@ router.get('/status-count', async (req, res) => {
   });
   router.get('/usercounts', async (req, res) => {
     try {
-      // Count the number of documents in each collection
-      const customerCount = await Customers.countDocuments();
-      const providerCount = await Provider.countDocuments();
-      const serviceCount = await Services.countDocuments();
-      const adminCount = await Admins.countDocuments();
+        // Count the number of documents in each collection
+        const customerCount = await Customers.countDocuments();
+        const providerCount = await Provider.countDocuments();
+        const serviceCount = await Services.countDocuments();
+        const adminCount = await Admins.countDocuments();
 
-      const totalCount = customerCount + providerCount;
-  
-      // Prepare the response object
-      const result = {
-        customers: customerCount,
-        providers: providerCount,
-        services: serviceCount,
-        admin:adminCount,
-        total: totalCount,
-      };
-  
-      res.status(200).json(result);
+        // Count male and female providers
+        const maleProviderCount = await Provider.countDocuments({ gender: 'male' });
+        const femaleProviderCount = await Provider.countDocuments({ gender: 'female' });
+
+        const totalCount = customerCount + providerCount;
+
+        // Prepare the response object
+        const result = {
+            customers: customerCount,
+            providers: providerCount,
+            services: serviceCount,
+            admin: adminCount,
+            total: totalCount,
+           
+            providerGender: {
+                male: maleProviderCount,
+                female: femaleProviderCount,
+            },
+        };
+
+        res.status(200).json(result);
     } catch (error) {
-      res.status(500).json({ message: 'An error occurred', error });
+        res.status(500).json({ message: 'An error occurred', error });
     }
-  });
+});
   module.exports = router
